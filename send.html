@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="style.css">
+  <title>Brochure Request confirmation</title>
+</head>
+
+<body>
+
+  <!-- 最終確認欄 ページ遷移した先で使う！ -->
+  <section>
+    <div class="bro_container">
+      <h2>Final confirmation</h2>
+      <h3 class="h3">Are you sure you have the following information correct?</h3>
+      <div id="output"></div>
+      <button id="q_1" class="btn">Send</button>
+    </div>
+  </section>
+
+  <!-- sendされた後に表示 -->
+  <section>
+    <div id="q_2" style="display:none" class="bro_container">
+      <h2>Sending complete!</h2>
+    </div>
+  </section>
+
+
+  <!-- 以下、Javascript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      set,
+      onChildAdded,
+      remove,
+      onChildRemoved,
+    } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBAFoCbh9YVjxF0DaQxIi1OdyiJofAyN6s",
+      authDomain: "inte-6ba50.firebaseapp.com",
+      projectId: "inte-6ba50",
+      storageBucket: "inte-6ba50.appspot.com",
+      messagingSenderId: "712948229252",
+      appId: "1:7129482 q_0029252:web:7042bc454bf5a4aa18ced1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app); //RealtimeDBに接続
+    const dbRef = ref(db, "form"); //RealtimeDB内の"form"を使う
+
+    onChildAdded(dbRef, function (data) {
+      const user = data.val();
+      // console.log(msg, "dataを取得");
+
+      let html = `
+              <div>
+                    <p class="user_item">${user.firstname}</p>
+                    <p class="user_item">${user.lastname}</p>
+                    <p class="user_item">${user.sex}</p>
+                    <p class="user_item">${user.address}</p>
+                    <p class="user_item">${user.age}</p>
+                    <p class="user_item">${user.aff}</p>
+                    <p class="user_item">${user.tel}</p>
+                    <p class="user_item">${user.email}</p>
+              </div>
+                `;
+      $("#output").append(html);
+    });
+
+    $("#q_1.btn").on("click", function () {
+      $("#q_1").closest("div").css("display", "none");
+      $("#q_2").closest("div").css("display", "block");
+    });
+
+  </script>
+
+</body>
+
+</html>

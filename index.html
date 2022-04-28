@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="style.css">
+  <title>Brochure Request</title>
+</head>
+
+<body>
+  <!-- 名前記入欄 -->
+  <section>
+    <div id="q_01" class="bro_container">
+      <h2>Enter your name</h2>
+      <div class="form1">
+        <div class="form1_item">
+          <input type="text" name="first_name" size="30" maxlength="30" value="" id="first_name">
+          <input type="text" name="last_name" size="30" maxlength="30" value="" id="last_name">
+        </div>
+        <h4>1/6 is being typed</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- 性別記入欄 -->
+  <section>
+    <div id="q_02" class="bro_container">
+      <h2>Select your sex</h2>
+      <div class="form2">
+        <div class="form2_item">
+          <select name="select_sex" id="select_sex">
+            <option value="male">male</option>
+            <option value="female">female</option>
+            <option value="other">other</option>
+          </select>
+        </div>
+        <h4>2/6 is being selected</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- 住所記入欄 -->
+  <section>
+    <div id="q_03" class="bro_container">
+      <h2>Enter your addres</h2>
+      <div class="form3">
+        <div class="form3_item">
+          <input type="text" class="form3_address" id="address">
+        </div>
+        <h4>3/6 is being typed</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- 年齢記入欄 -->
+  <section>
+    <div id="q_04" class="bro_container">
+      <h2>Select your age</h2>
+      <div class="form4">
+        <div class="form4_item">
+          <select name="select_age" id="select_age"></select>
+        </div>
+        <h4>4/6 is being typed</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- 所属記入欄 -->
+  <section>
+    <div id="q_05" class="bro_container">
+      <h2>Enter Your affiliation</h2>
+      <div class="form5">
+        <div class="form5_item">
+          <input type="text" class="form5_aff" id="aff">
+        </div>
+        <h4>5/6 is being typed</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- 連絡先記入欄 -->
+  <section>
+    <div id="q_06" class="bro_container">
+      <h2>Enter your contact</h2>
+      <div class="form6">
+        <div class="form6_item">
+          <p>TEL<input type="text" class="form6_tel" id="tel"></p>
+          <p>Email<input type="text" class="form6_email" id="email"></p>
+        </div>
+        <h4>6/6 is being typed</h4>
+        <div class="next_btn">
+          <button id="next" class="btn" onclick="location.href='Send.html'">Next</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 以下、Javascript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script type="module">
+    let selectElement = document.getElementById("select_age");
+    for (let i = 1; i <= 100; i++) {
+      let option = document.createElement("option");
+      option.value = i;
+      option.innerText = i;
+      selectElement.appendChild(option);
+    };
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      set,
+      onChildAdded,
+      remove,
+      onChildRemoved,
+    } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBAFoCbh9YVjxF0DaQxIi1OdyiJofAyN6s",
+      authDomain: "inte-6ba50.firebaseapp.com",
+      projectId: "inte-6ba50",
+      storageBucket: "inte-6ba50.appspot.com",
+      messagingSenderId: "712948229252",
+      appId: "1:7129482 q_0029252:web:7042bc454bf5a4aa18ced1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app); //RealtimeDBに接続
+    const dbRef = ref(db, "form"); //RealtimeDB内の"form"を使う
+
+    $("#next").on("click", function () {
+      // alert(1);
+
+      // 記入された要素を取得
+      const firstname = $("#first_name").val();
+      const lastname = $("#last_name").val();
+      const sex = $("#select_sex").val();
+      const address = $("#address").val();
+      const age = $("#select_age").val();
+      const aff = $("#aff").val();
+      const tel = $("#tel").val();
+      const email = $("#email").val();
+
+      // console.logで取得できたことを確認する！
+      console.log(firstname, "姓");
+      console.log(lastname, "名");
+      console.log(sex, "性");
+      console.log(address, "住所");
+      console.log(age, "年齢");
+      console.log(aff, "所属");
+      console.log(tel, "電話番号");
+      console.log(email, "メールアドレス");
+
+      // オブジェクト（データの塊）を作成する！
+      const user = {
+        firstname: firstname,
+        lastname: lastname,
+        sex: sex,
+        address: address,
+        age: age,
+        aff: aff,
+        tel: tel,
+        email: email,
+      };
+
+      const newPostRef = push(dbRef);
+      set(newPostRef, user);
+
+      // 入力欄を空にする！
+      $("#first_name").val("");
+      $("#last_name").val("");
+      $("#select_sex").val("");
+      $("#address").val("");
+      $("#select_age").val("");
+      $("#aff").val("");
+      $("#tel").val("");
+      $("#email").val("");
+    });
+
+  </script>
+
+  <!-- 2022/04/26のタスク -->
+  <!-- 【完了】①bro_containerを7/7まで作成・CSSはそこそこに装飾 -->
+  <!-- 【完了】②firebaseと接続し、データをjsオブジェクトに保存できるようにする。 -->
+  <!-- 【途中】③7項目入力し終えたら、最終チェック画面（入力済みのデータが出てくる）の作成  -->
+  <!-- ④チェック画面で「OK」押したら、「send completed!」的な画面が出る様にして完成 -->
+
+  <!-- その他やりたいこと -->
+  <!-- 例1：入力ミスしたら、入力画面に戻って、入力しなおしたら中身を書き換えられるようにする -->
+  <!-- 例2：内容が空の場合はアラートが出て、どの項目が未入力かお知らせする-->
+
+
+
+</body>
+
+</html>
